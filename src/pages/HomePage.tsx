@@ -32,7 +32,7 @@ export default function HomePage() {
         </div>
 
         {tableView === 'Your Quotes' && (
-          <div>
+          <div className="mb-6 flex gap-4">
             <ConfirmButton onClick={openCreateModal}>
               Create Quote
             </ConfirmButton>
