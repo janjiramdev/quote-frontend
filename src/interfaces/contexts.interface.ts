@@ -3,7 +3,7 @@ export interface ISessionTokens {
 }
 
 export interface ISessionUser {
-  id: string;
+  _id: string;
   username: string;
   displayName: string;
 }

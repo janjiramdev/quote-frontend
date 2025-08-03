@@ -3,10 +3,11 @@ import FailedAlert from '../components/alerts/FailedAlert';
 import CancelButton from '../components/buttons/CancelButton';
 import ConfirmButton from '../components/buttons/ConfirmButton';
 import DefaultModal from '../components/modals/DefaultModal';
+import EditProfileModal from '../components/modals/EditProfileModal';
+import { useSession } from '../contexts/sessions/SessionContext';
 import type { IUser } from '../interfaces/features.interface';
 import type { IUpdateUserRequestBody } from '../interfaces/services.interface';
 import { updateProfile } from '../services/users.service';
-import EditProfileModal from '../components/modals/EditProfileModal';
 
 interface IEditProfileFeatureProps {
   data: IUser;
@@ -19,6 +20,8 @@ export default function EditProfileFeature({
   isOpen,
   onClose,
 }: IEditProfileFeatureProps) {
+  const { setSessionUser } = useSession();
+
   const [isOpenConfirmModal, setIsOpenConfirmModal] = useState<boolean>(false);
   const [currentFormData, setCurrentFormData] =
     useState<IUpdateUserRequestBody>({
@@ -53,7 +56,12 @@ export default function EditProfileFeature({
       )
         updateProfileBody.password = prepareData.password;
 
-      await updateProfile(updateProfileBody);
+      const response = await updateProfile(updateProfileBody);
+      setSessionUser({
+        _id: response._id,
+        username: response.username,
+        displayName: response.displayName,
+      });
       onClose();
     } catch (error) {
       setErrorMessage(

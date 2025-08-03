@@ -6,7 +6,11 @@ interface IModalProps {
   onClose: () => void;
 }
 
-export default function DefaultModal({ title, children, onClose }: IModalProps) {
+export default function DefaultModal({
+  title,
+  children,
+  onClose,
+}: IModalProps) {
   return (
     <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center text-black">
       <div className="bg-white p-6 rounded-lg w-full max-w-md shadow-lg relative">

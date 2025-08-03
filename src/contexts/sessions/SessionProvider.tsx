@@ -44,7 +44,7 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
         setAccessToken(accessToken);
         setSessionAccessToken(accessToken);
         setSessionUser({
-          id: decodedAccessToken.sub,
+          _id: decodedAccessToken.sub,
           username: decodedAccessToken.username,
           displayName: decodedAccessToken.displayName,
         });
@@ -62,7 +62,7 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
 
     if (accessDecoded && isAccessTokenValid)
       setSessionUser({
-        id: accessDecoded.sub,
+        _id: accessDecoded.sub,
         username: accessDecoded.username,
         displayName: accessDecoded.displayName,
       });
@@ -82,6 +82,7 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
         sessionUser,
         setTokens,
         removeTokens,
+        setSessionUser,
       }}
     >
       {children}

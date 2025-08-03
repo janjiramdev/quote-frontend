@@ -43,7 +43,7 @@ export default function SignInPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md rounded-2xl bg-white p-8 shadow-xl">
+      <div className="w-[440px] h-[370px] rounded-2xl bg-white p-8 shadow-xl">
         <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">
           Welcome to Quote
         </h2>
@@ -84,22 +84,22 @@ export default function SignInPage() {
             </div>
           </div>
 
+          {errorMessage && (
+            <div
+              className={`text-sm text-center ${
+                errorMessage === 'sign in success'
+                  ? 'text-green-600'
+                  : 'text-red-600'
+              }`}
+            >
+              {errorMessage}
+            </div>
+          )}
+
           <ConfirmButton type="submit" isLoading={isLoading}>
             Sign In
           </ConfirmButton>
         </form>
-
-        {errorMessage && (
-          <div
-            className={`text-sm text-center ${
-              errorMessage === 'sign in success'
-                ? 'text-green-600'
-                : 'text-red-600'
-            }`}
-          >
-            {errorMessage}
-          </div>
-        )}
 
         <div className="mt-4 text-center text-sm text-gray-500">
           <p>Don't have an account?</p>

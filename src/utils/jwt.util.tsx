@@ -3,7 +3,7 @@ import { jwtDecode } from 'jwt-decode';
 interface IJwtPayload {
   sub: string;
   username: string;
-  displayName: string
+  displayName: string;
   iat?: number;
   exp?: number;
 }

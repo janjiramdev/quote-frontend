@@ -26,8 +26,8 @@ const ShortTermCell = ({ value }: { value: string }) => {
       {showFullContent
         ? formattedValue
         : formattedValue?.length < 80
-        ? formattedValue
-        : formattedValue.slice(0, 80) + '...'}
+          ? formattedValue
+          : formattedValue.slice(0, 80) + '...'}
     </span>
   );
 };

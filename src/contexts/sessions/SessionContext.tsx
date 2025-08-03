@@ -9,6 +9,7 @@ interface ISessionContextType {
   sessionUser: ISessionUser | undefined;
   setTokens: (input: ISessionTokens) => void;
   removeTokens: () => void;
+  setSessionUser: (input: ISessionUser | undefined) => void;
 }
 
 export const SessionContext = createContext<ISessionContextType | undefined>(
