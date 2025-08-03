@@ -1,4 +1,4 @@
-# merchant-web-react
+# quote-frontend
 
 ## Description
 
