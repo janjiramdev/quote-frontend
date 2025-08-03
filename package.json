@@ -1,6 +1,6 @@
 {
   "name": "quote-frontend",
-  "description": "This project is quote frontend web with React + TypeScript + Vite",
+  "description": "This project is quote frontend web with TypeScript, React and Vite",
   "version": "1.0.0",
   "author": "Janjira Mosamai",
   "private": true,

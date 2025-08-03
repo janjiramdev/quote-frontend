@@ -2,7 +2,7 @@
 
 ## Description
 
-This project is quote frontend web with React + TypeScript + Vite
+This project is quote frontend web with TypeScript, React and Vite
 
 ## Prerequisite
 
