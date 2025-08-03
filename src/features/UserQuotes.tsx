@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent } from 'react';
+import { useCallback, useEffect, useState, type ChangeEvent } from 'react';
 import FailedAlert from '../components/alerts/FailedAlert';
 import CancelButton from '../components/buttons/CancelButton';
 import ConfirmButton from '../components/buttons/ConfirmButton';
@@ -10,7 +10,11 @@ import type {
   ICreateModalProps,
   IQuote,
 } from '../interfaces/features.interface';
-import type { ICreateQuoteRequestBody } from '../interfaces/services.interface';
+import type {
+  ICreateQuoteRequestBody,
+  IPaginatedResponse,
+  IQuoteResponseData,
+} from '../interfaces/services.interface';
 import {
   createQuote,
   deleteQuote,
@@ -25,7 +29,10 @@ const columns = [
 
 export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
   const [userQuotes, setUserQuotes] = useState<IQuote[]>([]);
-  const [newQuote, setNewsetQuote] = useState<ICreateQuoteRequestBody>({
+  const [limit] = useState(1);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [newQuote, setNewQuote] = useState<ICreateQuoteRequestBody>({
     content: '',
   });
   const [deleteQuoteId, setDeleteQuoteId] = useState<string | undefined>(
@@ -35,9 +42,22 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
     useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>();
 
+  const fetchUserQuotes = useCallback(async () => {
+    try {
+      const response: IPaginatedResponse<IQuoteResponseData> =
+        await searchUserQuotes({ page, limit });
+      setUserQuotes(response.items);
+      setTotalPages(response.totalPages);
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error ? error.message : 'Search Quotes Failed',
+      );
+    }
+  }, [limit, page]);
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setNewsetQuote((prev) => ({ ...prev, [name]: value }));
+    setNewQuote((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleCreateQuote = async () => {
@@ -53,10 +73,10 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
         content: string;
       } = { content };
 
-      const createdQuote = await createQuote(payload);
+      await createQuote(payload);
+      fetchUserQuotes();
 
-      setUserQuotes([...userQuotes, createdQuote]);
-      setNewsetQuote({ content: '' });
+      setNewQuote({ content: '' });
       onClose();
     } catch (error) {
       setErrorMessage(
@@ -68,6 +88,7 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
   const handleConfirmCreate = async () => {
     setIsOpenConfirmCreate(false);
     await handleCreateQuote();
+    fetchUserQuotes();
   };
 
   const handleCancelConfirmCreate = () => {
@@ -77,7 +98,7 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
   const handleDeleteQuote = async (id: string) => {
     try {
       await deleteQuote(id);
-      setUserQuotes(userQuotes.filter((p) => p._id !== id));
+      fetchUserQuotes();
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : 'Delete Quote Failed',
@@ -86,17 +107,8 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
   };
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        setUserQuotes(await searchUserQuotes());
-      } catch (error) {
-        setErrorMessage(
-          error instanceof Error ? error.message : 'Search Quotes Failed',
-        );
-      }
-    };
-    fetch();
-  }, []);
+    fetchUserQuotes();
+  }, [fetchUserQuotes, page]);
 
   return (
     <div>
@@ -138,6 +150,10 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
             <DeleteButton onClick={() => setDeleteQuoteId(row._id)} />
           </div>
         )}
+        isPaginate={true}
+        page={page}
+        setPage={setPage}
+        totalPages={totalPages}
       />
 
       {isOpenConfirmCreate && (

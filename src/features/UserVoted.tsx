@@ -12,7 +12,7 @@ const columns = [
   { key: 'actions', label: 'ACTIONS', width: '150px' },
 ] as const;
 
-export default function UserVoted() {
+export default function UserVote() {
   const [quotes, setQuotes] = useState<IQuote[]>([]);
   const [errorMessage, setErrorMessage] = useState<string>();
 
@@ -34,7 +34,7 @@ export default function UserVoted() {
         if (response?.quoteId) setQuotes([response.quoteId]);
       } catch (error) {
         setErrorMessage(
-          error instanceof Error ? error.message : 'Search User Voted Failed',
+          error instanceof Error ? error.message : 'Search User Vote Failed',
         );
       }
     };

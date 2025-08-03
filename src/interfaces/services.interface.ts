@@ -1,5 +1,13 @@
 import type { IQuote, IUserVote } from './features.interface';
 
+export interface IPaginatedResponse<T> {
+  items: T[];
+  totalItems: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
 export interface ISignInServiceRequestBody {
   username: string;
   password: string;
@@ -22,6 +30,11 @@ export interface IUpdateUserRequestBody {
 
 export interface ICreateQuoteRequestBody {
   content: string;
+}
+
+export interface ISearchQuotesRequestParams {
+  page: number;
+  limit: number;
 }
 
 export interface IQuoteResponseData extends IQuote {

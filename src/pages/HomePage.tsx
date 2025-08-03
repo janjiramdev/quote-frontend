@@ -2,8 +2,8 @@ import { useState } from 'react';
 import ConfirmButton from '../components/buttons/ConfirmButton';
 import TableViewButton from '../components/buttons/TableViewButton';
 import AllQuotes from '../features/AllQuotes';
-import YourQuotes from '../features/UserQuotes';
-import YourVoted from '../features/UserVoted';
+import UserQuotes from '../features/UserQuotes';
+import UserVote from '../features/UserVoted';
 
 export default function HomePage() {
   const [tableView, setTableView] = useState<string>('All Quotes');
@@ -21,7 +21,7 @@ export default function HomePage() {
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-6 flex justify-between items-center">
         <div className="mb-6 flex gap-4">
-          {['All Quotes', 'Your Quotes', 'Your Voted'].map((view) => (
+          {['All Quotes', 'Your Quotes', 'Your Vote'].map((view) => (
             <TableViewButton
               key={view}
               nextView={view}
@@ -43,10 +43,10 @@ export default function HomePage() {
       {tableView === 'All Quotes' && <AllQuotes />}
 
       {tableView === 'Your Quotes' && (
-        <YourQuotes isOpen={isOpenUserQuotesModal} onClose={closeCreateModal} />
+        <UserQuotes isOpen={isOpenUserQuotesModal} onClose={closeCreateModal} />
       )}
 
-      {tableView === 'Your Voted' && <YourVoted />}
+      {tableView === 'Your Vote' && <UserVote />}
     </div>
   );
 }

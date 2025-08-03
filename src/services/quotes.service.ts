@@ -1,24 +1,27 @@
 import type {
+  IPaginatedResponse,
   ICreateQuoteRequestBody,
   IQuoteResponseData,
+  ISearchQuotesRequestParams,
 } from '../interfaces/services.interface';
 import client from './client.service';
 
-export const searchAllQuotes = async () => {
+export const searchAllQuotes = async (
+  params: ISearchQuotesRequestParams,
+): Promise<IPaginatedResponse<IQuoteResponseData>> => {
   try {
-    const response = await client.get<IQuoteResponseData[]>('/quotes/search');
-    return response.data;
-  } catch (error: unknown) {
-    const err = error as Error;
-    throw new Error(err.message ?? JSON.stringify(err));
-  }
-};
+    const { page, limit } = params;
 
-export const searchUserQuotes = async () => {
-  try {
-    const response = await client.get<IQuoteResponseData[]>(
-      '/quotes/search-user-quotes',
+    const response = await client.get<IPaginatedResponse<IQuoteResponseData>>(
+      '/quotes/search',
+      {
+        params: {
+          page,
+          limit,
+        },
+      },
     );
+
     return response.data;
   } catch (error: unknown) {
     const err = error as Error;
@@ -26,7 +29,32 @@ export const searchUserQuotes = async () => {
   }
 };
 
-export const createQuote = async (body: ICreateQuoteRequestBody) => {
+export const searchUserQuotes = async (
+  params: ISearchQuotesRequestParams,
+): Promise<IPaginatedResponse<IQuoteResponseData>> => {
+  try {
+    const { page, limit } = params;
+
+    const response = await client.get<IPaginatedResponse<IQuoteResponseData>>(
+      '/quotes/search-user-quotes',
+      {
+        params: {
+          page,
+          limit,
+        },
+      },
+    );
+
+    return response.data;
+  } catch (error: unknown) {
+    const err = error as Error;
+    throw new Error(err.message ?? JSON.stringify(err));
+  }
+};
+
+export const createQuote = async (
+  body: ICreateQuoteRequestBody,
+): Promise<IQuoteResponseData> => {
   try {
     const response = await client.post<IQuoteResponseData>('/quotes', body);
     return response.data;
@@ -36,7 +64,7 @@ export const createQuote = async (body: ICreateQuoteRequestBody) => {
   }
 };
 
-export const deleteQuote = async (id: string) => {
+export const deleteQuote = async (id: string): Promise<IQuoteResponseData> => {
   try {
     const response = await client.delete<IQuoteResponseData>(`/quotes/${id}`);
     return response.data;

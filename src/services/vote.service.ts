@@ -1,10 +1,13 @@
 import type { IUserVote } from '../interfaces/features.interface';
-import type { IVoteQuoteRequestBody } from '../interfaces/services.interface';
+import type {
+  IVoteQuoteRequestBody,
+  IVoteResponseData,
+} from '../interfaces/services.interface';
 import client from './client.service';
 
-export const getUserVote = async () => {
+export const getUserVote = async (): Promise<IVoteResponseData> => {
   try {
-    const response = await client.get<IUserVote>('votes/user-vote');
+    const response = await client.get<IVoteResponseData>('votes/user-vote');
     return response.data;
   } catch (error: unknown) {
     const err = error as Error;
@@ -12,9 +15,11 @@ export const getUserVote = async () => {
   }
 };
 
-export const voteQuote = async (body: IVoteQuoteRequestBody) => {
+export const voteQuote = async (
+  body: IVoteQuoteRequestBody,
+): Promise<IUserVote> => {
   try {
-    const response = await client.post('/votes', body);
+    const response = await client.post<IVoteResponseData>('/votes', body);
     return response.data;
   } catch (error: unknown) {
     const err = error as Error;

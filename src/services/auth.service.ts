@@ -21,7 +21,7 @@ export const signIn = async (
   }
 };
 
-export const signUp = async (body: ISignUpRequestBody) => {
+export const signUp = async (body: ISignUpRequestBody): Promise<IUser> => {
   try {
     const response = await client.post<IUser>('/auth/signup', body);
     return response.data;
