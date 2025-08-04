@@ -6,11 +6,15 @@ import type {
   ISessionTokens,
   ISessionUser,
 } from '../../interfaces/contexts.interface';
+import { refreshToken as refreshTokenService } from '../../services/auth.service';
 import { decodeJwt } from '../../utils/jwt.util';
 import {
   getAccessToken,
+  getRefreshToken,
   removeAccessToken,
+  removeRefreshToken,
   setAccessToken,
+  setRefreshToken,
 } from '../../utils/cookie.util';
 
 export default function SessionProvider({ children }: { children: ReactNode }) {
@@ -23,6 +27,9 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
   const [sessionAccessToken, setSessionAccessToken] = useState<
     string | undefined
   >(() => getAccessToken() ?? undefined);
+  const [sessionRefreshToken, setSessionRefreshToken] = useState<
+    string | undefined
+  >(() => getRefreshToken() ?? undefined);
   const [sessionUser, setSessionUser] = useState<ISessionUser | undefined>(
     undefined,
   );
@@ -31,18 +38,22 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
 
   const removeTokens = useCallback(() => {
     removeAccessToken();
+    removeRefreshToken();
     setSessionAccessToken(undefined);
+    setSessionRefreshToken(undefined);
     setSessionUser(undefined);
   }, []);
 
   const setTokens = useCallback(
     (input: ISessionTokens) => {
-      const { accessToken } = input;
+      const { accessToken, refreshToken } = input;
       const decodedAccessToken = decodeJwt(accessToken);
 
       if (decodedAccessToken) {
         setAccessToken(accessToken);
+        setRefreshToken(refreshToken);
         setSessionAccessToken(accessToken);
+        setSessionRefreshToken(refreshToken);
         setSessionUser({
           _id: decodedAccessToken.sub,
           username: decodedAccessToken.username,
@@ -53,12 +64,30 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
     [removeTokens],
   );
 
+  const refreshTokens = useCallback(
+    async (input: string) => {
+      try {
+        setTokens(await refreshTokenService({ refreshToken: input }));
+      } catch {
+        removeTokens();
+        navigate('/login');
+      }
+    },
+    [setTokens, removeTokens, navigate],
+  );
+
   useEffect(() => {
     const accessDecoded = sessionAccessToken
       ? decodeJwt(sessionAccessToken)
       : undefined;
+    const refreshDecoded = sessionRefreshToken
+      ? decodeJwt(sessionRefreshToken)
+      : undefined;
+
     const isAccessTokenValid =
       accessDecoded?.exp && accessDecoded.exp * 1000 > Date.now();
+    const isRefreshTokenValid =
+      refreshDecoded?.exp && refreshDecoded.exp * 1000 > Date.now();
 
     if (accessDecoded && isAccessTokenValid)
       setSessionUser({
@@ -66,6 +95,13 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
         username: accessDecoded.username,
         displayName: accessDecoded.displayName,
       });
+    else if (
+      !isAccessTokenValid &&
+      sessionRefreshToken &&
+      refreshDecoded &&
+      isRefreshTokenValid
+    )
+      refreshTokens(sessionRefreshToken);
     else {
       removeTokens();
       if (location.pathname !== '/signin' && !hasNavigatedToSignInRef.current) {
@@ -73,7 +109,14 @@ export default function SessionProvider({ children }: { children: ReactNode }) {
         navigate('/signup');
       }
     }
-  }, [sessionAccessToken, removeTokens, navigate, location]);
+  }, [
+    sessionAccessToken,
+    sessionRefreshToken,
+    refreshTokens,
+    removeTokens,
+    navigate,
+    location,
+  ]);
 
   return (
     <SessionContext.Provider

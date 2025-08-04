@@ -4,5 +4,7 @@ export default {
   },
   cookies: {
     accessTokenExpireTime: import.meta.env.VITE_COOKIE_ACCESS_TOKEN_EXPIRE_TIME,
+    refreshTokenExpireTime: import.meta.env
+      .VITE_COOKIE_REFRESH_TOKEN_EXPIRE_TIME,
   },
 };

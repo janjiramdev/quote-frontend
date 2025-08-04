@@ -34,6 +34,10 @@ export const getAccessToken = (): string | undefined => {
   return Cookies.get('accessToken');
 };
 
+export const getRefreshToken = (): string | undefined => {
+  return Cookies.get('refreshToken');
+};
+
 export const setAccessToken = (input: string) => {
   Cookies.set('accessToken', input, {
     expires: formatExpiredTime(
@@ -42,6 +46,18 @@ export const setAccessToken = (input: string) => {
   });
 };
 
+export const setRefreshToken = (input: string) => {
+  Cookies.set('refreshToken', input, {
+    expires: formatExpiredTime(
+      mainConfig.cookies.refreshTokenExpireTime ?? '7d',
+    ),
+  });
+};
+
 export const removeAccessToken = () => {
   Cookies.remove('accessToken');
+};
+
+export const removeRefreshToken = () => {
+  Cookies.remove('refreshToken');
 };

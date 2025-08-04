@@ -4,6 +4,7 @@ import CancelButton from '../components/buttons/CancelButton';
 import ConfirmButton from '../components/buttons/ConfirmButton';
 import DefaultModal from '../components/modals/DefaultModal';
 import { useSession } from '../contexts/sessions/SessionContext';
+import { signOut } from '../services/auth.service';
 import GetProfileFeature from './GetProfile';
 
 export default function NavBar() {
@@ -13,8 +14,9 @@ export default function NavBar() {
 
   const [isOpenSignOutModal, setIsOpenSignOutModal] = useState<boolean>(false);
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setIsOpenSignOutModal(false);
+    await signOut();
     removeTokens();
     navigate('/signin');
   };

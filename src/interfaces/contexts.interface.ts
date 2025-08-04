@@ -1,5 +1,6 @@
 export interface ISessionTokens {
   accessToken: string;
+  refreshToken: string;
 }
 
 export interface ISessionUser {

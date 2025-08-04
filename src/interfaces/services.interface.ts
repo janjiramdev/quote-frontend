@@ -15,6 +15,11 @@ export interface ISignInServiceRequestBody {
 
 export interface ISignInServiceResponseData {
   accessToken: string;
+  refreshToken: string;
+}
+
+export interface IRefreshTokenServiceRequestBody {
+  refreshToken: string;
 }
 
 export interface ISignUpRequestBody {
