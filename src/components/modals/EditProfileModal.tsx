@@ -1,6 +1,8 @@
+import { useState } from 'react';
 import type { IUpdateUserRequestBody } from '../../interfaces/services.interface';
 import CancelButton from '../buttons/CancelButton';
 import ConfirmButton from '../buttons/ConfirmButton';
+import ShowPasswordToggleButton from '../buttons/PasswordToggleButton';
 import TextField from '../inputs/TextField';
 import DefaultModal from './DefaultModal';
 
@@ -19,6 +21,8 @@ export default function EditProfileModal({
   onSubmit,
   onClose,
 }: IEditProfileModalProps) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+
   return (
     <>
       {isOpen ? (
@@ -33,11 +37,19 @@ export default function EditProfileModal({
             />
           </div>
           <label className="text-sm">Password</label>
-          <TextField
-            type="password"
-            value={data.password}
-            onChange={(e) => onChange({ ...data, password: e.target.value })}
-          />
+          <div className="relative">
+            <TextField
+              type={showPassword ? 'text' : 'password'}
+              value={data.password}
+              onChange={(e) => onChange({ ...data, password: e.target.value })}
+              className="w-full rounded-lg border border-gray-300 p-2 focus:border-blue-500 focus:outline-none"
+            />
+
+            <ShowPasswordToggleButton
+              isShow={showPassword}
+              onClick={() => setShowPassword(!showPassword)}
+            />
+          </div>
 
           <div className="flex justify-end gap-2 mt-4">
             <CancelButton onClick={onClose}>Cancel</CancelButton>

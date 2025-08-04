@@ -43,7 +43,7 @@ export default function SignInPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
-      <div className="w-[440px] h-[370px] rounded-2xl bg-white p-8 shadow-xl">
+      <div className="max-w-md rounded-2xl bg-white p-8 shadow-xl">
         <h2 className="mb-6 text-center text-2xl font-bold text-gray-800">
           Welcome to Quote
         </h2>
