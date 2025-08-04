@@ -21,6 +21,24 @@ import {
   searchUserQuotes,
 } from '../services/quotes.service';
 
+const sortOptions: string[] = [
+  'Created Date New - Old',
+  'Created Date Old - New',
+  'Content A - z',
+  'Content Z - a',
+  'Total Votes High - Low',
+  'Total Votes Low - High',
+];
+
+const sortValue: [string, number][] = [
+  ['createdAt', -1],
+  ['createdAt', 1],
+  ['content', 1],
+  ['content', -1],
+  ['totalVotes', -1],
+  ['totalVotes', 1],
+];
+
 const columns = [
   { key: 'content', label: 'Content' },
   { key: 'totalVotes', label: 'Total Votes', width: '100px' },
@@ -29,9 +47,11 @@ const columns = [
 
 export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
   const [userQuotes, setUserQuotes] = useState<IQuote[]>([]);
-  const [limit] = useState(1);
-  const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [searchBy, setSearchBy] = useState<string>();
+  const [sortBy, setSortBy] = useState<string>(sortOptions[0]);
+  const [limit] = useState<number>(10);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
   const [newQuote, setNewQuote] = useState<ICreateQuoteRequestBody>({
     content: '',
   });
@@ -45,7 +65,13 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
   const fetchUserQuotes = useCallback(async () => {
     try {
       const response: IPaginatedResponse<IQuoteResponseData> =
-        await searchUserQuotes({ page, limit });
+        await searchUserQuotes({
+          search: searchBy,
+          sortBy: sortValue[sortOptions.indexOf(sortBy)][0],
+          sortDirection: sortValue[sortOptions.indexOf(sortBy)][1],
+          page,
+          limit,
+        });
       setUserQuotes(response.items);
       setTotalPages(response.totalPages);
     } catch (error) {
@@ -53,7 +79,7 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
         error instanceof Error ? error.message : 'Search Quotes Failed',
       );
     }
-  }, [limit, page]);
+  }, [searchBy, sortBy, page, limit]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -150,6 +176,12 @@ export default function UserQuotes({ isOpen, onClose }: ICreateModalProps) {
             <DeleteButton onClick={() => setDeleteQuoteId(row._id)} />
           </div>
         )}
+        isSearchAndSort={true}
+        searchBy={searchBy}
+        setSearchBy={setSearchBy}
+        sortOptions={sortOptions}
+        sortBy={sortBy}
+        setSortBy={setSortBy}
         isPaginate={true}
         page={page}
         setPage={setPage}

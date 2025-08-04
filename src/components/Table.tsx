@@ -12,6 +12,12 @@ interface TableProps<T> {
   rows: T[];
   rowKey: keyof T;
   renderActions?: (row: T, index: number) => ReactNode;
+  isSearchAndSort?: boolean;
+  searchBy?: string;
+  setSearchBy?: (input: string) => void;
+  sortBy?: string;
+  setSortBy?: (input: string) => void;
+  sortOptions?: string[];
   isPaginate?: boolean;
   page?: number;
   setPage?: (input: number) => void;
@@ -42,6 +48,12 @@ export default function Table<T>({
   rows,
   rowKey,
   renderActions,
+  isSearchAndSort = false,
+  searchBy,
+  setSearchBy,
+  sortBy,
+  setSortBy,
+  sortOptions,
   isPaginate = false,
   page,
   setPage,
@@ -52,6 +64,29 @@ export default function Table<T>({
 
   return (
     <>
+      {isSearchAndSort && setSearchBy && setSortBy && sortOptions?.length ? (
+        <div className="flex items-center w-full max-w-auto mx-auto mb-6 gap-x-4">
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchBy}
+            onChange={(e) => setSearchBy(e.target.value)}
+            className="flex-[7] px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+          />
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="flex-[3] px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-300"
+          >
+            {sortOptions.map((option, index) => (
+              <option key={index} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
+      ) : undefined}
+
       <div className="overflow-x-auto rounded-lg shadow ">
         <table className="table-auto w-full border border-gray-300 divide-y divide-gray-200 text-sm ">
           <thead className="bg-gray-100 text-center text-gray-800 uppercase tracking-wider whitespace-nowrap ">
@@ -112,7 +147,7 @@ export default function Table<T>({
       </div>
 
       {isPaginate && page && setPage && totalPages ? (
-        <div className="mt-10 flex justify-center items-center space-x-4">
+        <div className="mt-6 flex justify-center items-center space-x-4">
           <PaginateButton
             disabled={page === 1}
             onClick={() => setPage(page - 1)}

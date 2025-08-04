@@ -10,12 +10,15 @@ export const searchAllQuotes = async (
   params: ISearchQuotesRequestParams,
 ): Promise<IPaginatedResponse<IQuoteResponseData>> => {
   try {
-    const { page, limit } = params;
+    const { search, sortBy, sortDirection, page, limit } = params;
 
     const response = await client.get<IPaginatedResponse<IQuoteResponseData>>(
       '/quotes/search',
       {
         params: {
+          search,
+          sortBy,
+          sortDirection,
           page,
           limit,
         },
@@ -33,12 +36,15 @@ export const searchUserQuotes = async (
   params: ISearchQuotesRequestParams,
 ): Promise<IPaginatedResponse<IQuoteResponseData>> => {
   try {
-    const { page, limit } = params;
+    const { search, sortBy, sortDirection, page, limit } = params;
 
     const response = await client.get<IPaginatedResponse<IQuoteResponseData>>(
       '/quotes/search-user-quotes',
       {
         params: {
+          search,
+          sortBy,
+          sortDirection,
           page,
           limit,
         },

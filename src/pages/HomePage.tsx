@@ -20,7 +20,7 @@ export default function HomePage() {
   return (
     <div className="p-6 max-w-4xl mx-auto">
       <div className="mb-6 flex justify-between items-center">
-        <div className="mb-6 flex gap-4">
+        <div className="flex gap-4">
           {['All Quotes', 'Your Quotes', 'Your Vote'].map((view) => (
             <TableViewButton
               key={view}
@@ -32,7 +32,7 @@ export default function HomePage() {
         </div>
 
         {tableView === 'Your Quotes' && (
-          <div className="mb-6 flex gap-4">
+          <div className="flex gap-4">
             <ConfirmButton onClick={openCreateModal}>
               Create Quote
             </ConfirmButton>

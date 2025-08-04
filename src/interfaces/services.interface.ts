@@ -33,6 +33,9 @@ export interface ICreateQuoteRequestBody {
 }
 
 export interface ISearchQuotesRequestParams {
+  search?: string;
+  sortBy: string;
+  sortDirection: number;
   page: number;
   limit: number;
 }
